@@ -21,6 +21,7 @@ const winPatterns = [
 
 const resetGame = () =>  {
       turnO = true;
+      count = 0;
       enableBox();
       msgContainer.classList.add("hide");
 }
@@ -28,27 +29,29 @@ const resetGame = () =>  {
 boxes.forEach((box) => {
     box.addEventListener("click",() => {
         
-        count++ ;
-        if(count === 9)
-        {
-            msg.innerText = "Draw";
-            msgContainer.classList.remove("hide");
-
-        }
-        
-        if(turnO){
+        if(turnO){  //player O
             box.innerText = "O";
             turnO = false;
         }
-        else{
+        else{    //player X
             box.innerText = "X";
             turnO = true;
         }
-        box.disabled = true ; //ek player ki turn hone ke baad woh value ko change nhi kar sakta
-
-        checkWinner();
+        box.disabled = true ;   //ek player ki turn hone ke baad woh value ko change nhi kar sakta
+        count++;
+        let isWinner = checkWinner();
+        if(count === 9 && !isWinner){
+            gameDraw();
+        }
+        
     });
 });
+
+const gameDraw = () => {
+    msg.innerText = "Game Draw";
+    msgContainer.classList.remove("hide");
+    disableBox();
+};
 
 const disableBox = () =>
 {
@@ -56,7 +59,7 @@ const disableBox = () =>
     {
         box.disabled = true;
     }
-}
+};
 
 const enableBox = () =>
 {
@@ -65,14 +68,14 @@ const enableBox = () =>
             box.disabled = false;
             box.innerText = "";
         }
-}
+};
 
 const ShowWinner = (winner) =>
 {
     msg.innerText = `Congratulations , Winner is ${winner}`;
     msgContainer.classList.remove("hide");
     disableBox();
-}
+};
 
 const checkWinner = () =>{
     for (let pattern of winPatterns)
@@ -87,15 +90,13 @@ const checkWinner = () =>{
         {
             if (posVal1 === posVal2 && posVal2 === posVal3){
                 ShowWinner(posVal1);
+                return true;
 
             }
         }
 
-
-        // console.log(pattern[0],pattern[1],pattern[2]);
-        // console.log(boxes[pattern[0]],boxes[pattern[1]],boxes[pattern[2]]);
     }
-}
+};
 
 
 newGameBtn.addEventListener("click",resetGame);
